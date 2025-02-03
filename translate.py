@@ -6,7 +6,7 @@ def translate_word(google_translator, name_string, new_language) -> str:
     start_spec_word = False
 
     if not name_string or name_string is None:
-        return ''
+        return None
 
     while "{" in name_string and '}' in name_string:
         start_index = 0

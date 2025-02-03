@@ -1,79 +1,73 @@
-from settings import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT
+import debug_log
+import settings
 import psycopg2
 
 
 def start_db_connection():
     return psycopg2.connect(
-        database=DB_NAME,
-        user=DB_USER,
-        host=DB_HOST,
-        port=DB_PORT,
-        password=DB_PASSWORD
+        database=settings.DB_NAME,
+        user=settings.DB_USER,
+        host=settings.DB_HOST,
+        port=settings.DB_PORT,
+        password=settings.DB_PASSWORD
     )
 
 
-def db_response(db_function, selector_list):
+def stop_db_connection():
+    CONNECTION.close()
+    debug_log.logging(text=f"Connection with DataBase was closed", log_type="info")
+
+
+def get_data(db_function, selector_list):
     """ Request to DB in "try-except" construction """
 
-    # debug_log(f'{func_name} | INFO | DB response with selector_list = {selector_list} and db_function = {db_function}', 'db_requests.txt')
     try:
         response = make_callproc(db_function, selector_list)
         response = response[0][0] if response and response[0] else list()
-        # debug_log(f'{func_name} | SUCCESS | Response from BD. Gotten data: {response}', 'db_requests.txt')
         return response
     except Exception as error:
-        # debug_log(f'{func_name} | ERROR | Response from BD. Error: {error}', 'db_requests.txt')
-        print(error)
+        debug_log.logging(text=f'Error with "{db_function}({selector_list})". Error: {error}', log_type='error')
         return list()
 
 
+def db_request(db_function_name, selector_list):
+    cursor = CONNECTION.cursor()
+    cursor.callproc(db_function_name, selector_list)
+    data = cursor.fetchall()
+    CONNECTION.commit()
+    return data
+
+
 def make_callproc(db_function_name, selector_list):
-    cur = CONNECTION.cursor()
-    func_name = 'make_callproc - db.py'
-    FILE_LOG = 'database_connect.txt'
+    global CONNECTION
 
     try:
-        cur.callproc(db_function_name, selector_list)
-        data = cur.fetchall()
-        CONNECTION.commit()
-        # debug_log(f'{func_name} | SUCCESS | Response was get with query = {cur.query}', FILE_LOG)
-        return data
-    except Exception as error:
-        print(error)
-    # except psycopg2.errors.ConnectionException as error:
-    #     # debug_log(f"{func_name} | ERROR | Response wasn't get with query = {cur.query}. Error with connection: {error}", FILE_LOG)
-    #     stop_db_connection(connection)
-    #
-    #     while True:
-    #         # debug_log(f"{func_name} | INFO |Start to reconnect with DB.", FILE_LOG)
-    #         try:
-    #             stop_db_connection(connection)
-    #             connection = start_db_connection()
-    #             cur = connection.cursor()
-    #             cur.callproc(db_function_name, selector_list)
-    #             data = cur.fetchall()
-    #             connection.commit()
-    #             # debug_log(f'{func_name} | SUCCESS | Reconnect DB - success. Response was get with query = {cur.query}', FILE_LOG)
-    #             return data
-    #         except psycopg2.Error as error:
-    #             pass
-    #             # debug_log(f"{func_name} | ERROR | Response wasn't get with query = {cur.query}. Error with connection : {error}", FILE_LOG)
-    # except psycopg2.DatabaseError as error:
-    #     # debug_log(f"{func_name} | ERROR | Response wasn't get with query = {cur.query}. Error with connection: {error}",FILE_LOG)
-    #     while True:
-    #         # debug_log(f"{func_name} | INFO | Start to reconnect with DB.", FILE_LOG)
-    #         try:
-    #             stop_db_connection(connection)
-    #             connection = start_db_connection()
-    #             cur = connection.cursor()
-    #             cur.callproc(db_function_name, selector_list)
-    #             data = cur.fetchall()
-    #             connection.commit()
-    #             # debug_log(f'{func_name} | SUCCESS | Reconnect DB - success. Response was get with query = {cur.query}', FILE_LOG)
-    #             return data
-    #         except Exception as error:
-    #             # debug_log(f"{func_name} | ERROR | Response wasn't get with query = {cur.query}. Error with connection: {error}", FILE_LOG)
-    #             return None
+        return db_request(db_function_name, selector_list)
+    except psycopg2.errors.ConnectionException as error:
+        debug_log.logging(text=f'Error with "{cursor.query}". Error with connection: {error}', log_type='warning')
+        stop_db_connection()
+
+        while True:
+            debug_log.logging(text=f'Start to reconnect to DataBase.', log_type='warning')
+
+            try:
+                CONNECTION = start_db_connection()
+                return db_request(db_function_name, selector_list)
+            except psycopg2.Error as error:
+                debug_log.logging(text=f'Error with reconnect: {error}', log_type='critical')
+    except psycopg2.DatabaseError as error:
+        debug_log.logging(text=f'Error with "{cursor.query}". Error: {error}', log_type='warning')
+        stop_db_connection()
+
+        while True:
+            debug_log.logging(text=f'Start to reconnect to DataBase.', log_type='warning')
+
+            try:
+                CONNECTION = start_db_connection()
+                return db_request(db_function_name, selector_list)
+            except Exception as error:
+                debug_log.logging(text=f'Error with reconnect: {error}', log_type='critical')
+                return None
 
 
 CONNECTION = start_db_connection()
