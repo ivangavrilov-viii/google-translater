@@ -38,7 +38,7 @@ for names_dict in translate_names:
         label_name = translate.translate_word(google_translator, label['name'], settings.END_LANG)
         label_title = translate.translate_word(google_translator, label['title'], settings.END_LANG)
         label_comment = translate.translate_word(google_translator, label['comment'], settings.END_LANG)
-        label_index = translate.translate_word(google_translator, label['index'], settings.END_LANG)
+        label_index = label['index'] if label.get('index', None) else None
 
         label_selector = [label['key'], names_dict, label_name, label_title, label_comment, label_index, settings.USER_ID, settings.END_LANG]
         update_translate = db.get_data(settings.UPDATE_NAMES, label_selector)
@@ -52,7 +52,7 @@ for names_dict in translate_names:
             label_name = translate.translate_word(google_translator, label['name'], language)
             label_title = translate.translate_word(google_translator, label['title'], language)
             label_comment = translate.translate_word(google_translator, label['comment'], language)
-            label_index = translate.translate_word(google_translator, label['index'], language)
+            label_index = label['index'] if label.get('index', None) else None
             language = 'ge' if language == 'ka' else language
 
             label_selector = [label['key'], names_dict, label_name, label_title, label_comment, label_index, settings.USER_ID, language]
