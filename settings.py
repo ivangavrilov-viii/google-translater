@@ -14,10 +14,10 @@ BUILD = 'local'
 
 if BUILD == 'local' and PROJECT == 'flatinn':
     CONFIG_DB = 'db_test_flatinn'
-elif BUILD == 'local' and PROJECT == 'leocars':
-    CONFIG_DB = 'db_leocars'
-else:
+elif BUILD == 'prod' and PROJECT == 'flatinn':
     CONFIG_DB = 'db'
+elif PROJECT == 'leocars':
+    CONFIG_DB = 'db_leocars'
 
 DB_NAME = config.get(CONFIG_DB, 'NAME')
 
