@@ -16,7 +16,7 @@ if BUILD == 'local' and PROJECT == 'flatinn':
     CONFIG_DB = 'db_test_flatinn'
 elif BUILD == 'prod' and PROJECT == 'flatinn':
     CONFIG_DB = 'db'
-elif PROJECT == 'leocars':
+else:
     CONFIG_DB = 'db_leocars'
 
 DB_NAME = config.get(CONFIG_DB, 'NAME')
@@ -60,4 +60,6 @@ else:
 
     END_LANGS = [
         'ar',
+        'de',
+        'zh-CN'
     ]
