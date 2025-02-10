@@ -70,19 +70,35 @@ def make_callproc(db_function_name, selector_list):
                 return None
 
 
-def db_names():
+def db_names(language_id):
     with CONNECTION.cursor() as cursor:
-        cursor.execute("""
+        cursor.execute(f"""
             SELECT * 
-            FROM names AS name
-            INNER JOIN languages AS language
-            ON name.language_id = language.index
-            WHERE language.key = 'ru'; 
+            FROM names 
+            WHERE language_id = {language_id}; 
         """)
 
         names = cursor.fetchall()
         CONNECTION.commit()
         return names
+
+
+def db_language(language):
+    with CONNECTION.cursor() as cursor:
+        cursor.execute(f"SELECT index FROM languages WHERE key = '{language}'")
+        language_id = cursor.fetchone()
+        CONNECTION.commit()
+        language_id = language_id[0] if language_id and language_id[0] else None
+        return language_id
+
+
+def save_name(name_set, name_key, name_translation, name_comment, name_title, language_id, name_verified):
+    with CONNECTION.cursor() as cursor:
+        cursor.execute(f"""
+            INSERT INTO names (set, key, translation, comment, title, language_id, verified)
+            VALUES ('{name_set}','{name_key}', '{name_translation}', '{name_comment}', '{name_title}', {language_id}, {name_verified})
+        """)
+        CONNECTION.commit()
 
 
 def get_db_tables():
@@ -101,11 +117,12 @@ def get_db_tables():
         print(table[0])
 
 
-def get_names():
+def get_names(language):
     global CONNECTION
+    translate_names = list()
 
     try:
-        return db_names()
+        names = db_names(language)
     except psycopg2.errors.ConnectionException as error:
         debug_log.logging(text=f'Error with "{cursor.query}". Error with connection: {error}', log_type='warning')
         stop_db_connection()
@@ -115,7 +132,7 @@ def get_names():
 
             try:
                 CONNECTION = start_db_connection()
-                return db_names()
+                names = db_names(language)
             except psycopg2.Error as error:
                 debug_log.logging(text=f'Error with reconnect: {error}', log_type='critical')
     except psycopg2.DatabaseError as error:
@@ -127,10 +144,25 @@ def get_names():
 
             try:
                 CONNECTION = start_db_connection()
-                return db_names()
+                names = db_names(language)
             except Exception as error:
                 debug_log.logging(text=f'Error with reconnect: {error}', log_type='critical')
                 return None
+
+    if names and len(names) > 0:
+        for name in names:
+            translate_names.append({
+                'index': name[0],
+                'set': name[1],
+                'key': name[2],
+                'translation': name[3],
+                'comment': name[4],
+                'title': name[5],
+                'language_id': int(name[6]),
+                'verified': name[7]
+            })
+        return translate_names
+    return None
 
 
 CONNECTION = start_db_connection()
