@@ -32,7 +32,8 @@ DB_PASSWORD = config.get(CONFIG_DB, 'PASSWORD')
 if PROJECT == 'flatinn':
     NAME_URLS = [
         "https://auth.flatinn.ru/static/names.txt",
-        "https://guests.flatinn.ru/static/general/names.txt"
+        "https://guests.flatinn.ru/static/general/names.txt",
+        "https://flatinn.ru/static/names.txt"
     ]
 
     START_LANG = config.get('variables', 'START_LANG')
