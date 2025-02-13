@@ -24,7 +24,6 @@ for file_url in settings.NAME_URLS:
         translate_names += names
 
 debug_log.logging(text=f"List(length: {len(translate_names)}) to translate: {translate_names}.", log_type='info')
-debug_log.logging(text=f"Start translate from '{settings.START_LANG} to '{settings.END_LANG}'", log_type='info')
 
 
 for names_dict in translate_names:

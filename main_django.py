@@ -12,7 +12,6 @@ language_id = db.db_language(settings.START_LANG)
 translate_names = db.get_names(language_id)
 
 debug_log.logging(text=f"List(length: {len(translate_names)}) to translate.", log_type='info')
-debug_log.logging(text=f"Start translate from '{settings.START_LANG}' to '{settings.END_LANG}'", log_type='info')
 
 en_language_id = db.db_language(settings.END_LANG)
 
