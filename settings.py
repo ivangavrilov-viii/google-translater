@@ -54,6 +54,11 @@ if PROJECT == 'flatinn':
 
     USER_ID = int(config.get('variables', 'DB_USER_ID'))
 
+    BIG_DICTS = [
+        "reviews",
+        "rentals-headline",
+    ]
+
 else:
     START_LANG = config.get('variables', 'START_LANG')
 
