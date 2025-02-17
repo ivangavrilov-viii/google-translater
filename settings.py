@@ -1,4 +1,5 @@
 import configparser
+import argparse
 import os
 
 
@@ -30,12 +31,6 @@ DB_PORT = config.get(CONFIG_DB, 'PORT')
 DB_PASSWORD = config.get(CONFIG_DB, 'PASSWORD')
 
 if PROJECT == 'flatinn':
-    NAME_URLS = [
-        "https://auth.flatinn.ru/static/names.txt",
-        "https://guests.flatinn.ru/static/general/names.txt",
-        "https://flatinn.ru/static/names.txt"
-    ]
-
     START_LANG = config.get('variables', 'START_LANG')
 
     END_LANG = config.get('variables', 'END_LANG')
@@ -59,6 +54,38 @@ if PROJECT == 'flatinn':
         "rentals-headline",
     ]
 
+    mode_choices = [
+        'full',
+        'auth',
+        'guests',
+        'owners',
+        'flatinn',
+        'dashboard',
+    ]
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('mode', choices=mode_choices)
+    args = parser.parse_args()
+    MODE = args.mode
+
+    if MODE == 'guests':
+        NAME_URLS = [
+            "https://guests.flatinn.ru/static/general/names.txt",
+        ]
+    elif MODE == 'auth':
+        NAME_URLS = [
+            "https://auth.flatinn.ru/static/names.txt",
+        ]
+    elif MODE == 'flatinn':
+        NAME_URLS = [
+             "https://flatinn.ru/static/names.txt"
+        ]
+    else:
+        NAME_URLS = [
+            "https://auth.flatinn.ru/static/names.txt",
+            "https://guests.flatinn.ru/static/general/names.txt",
+            "https://flatinn.ru/static/names.txt"
+        ]
 else:
     START_LANG = config.get('variables', 'START_LANG')
 

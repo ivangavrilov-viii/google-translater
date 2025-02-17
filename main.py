@@ -23,6 +23,9 @@ for file_url in settings.NAME_URLS:
         names = ast.literal_eval(input_string)
         translate_names += names
 
+if settings.MODE == 'full':
+    translate_names += settings.BIG_DICTS
+
 debug_log.logging(text=f"List(length: {len(translate_names)}) to translate: {translate_names}.", log_type='info')
 
 
