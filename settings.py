@@ -57,6 +57,7 @@ if PROJECT == 'flatinn':
     mode_choices = [
         'full',
         'auth',
+        'short',
         'guests',
         'owners',
         'flatinn',
@@ -86,6 +87,9 @@ if PROJECT == 'flatinn':
             "https://guests.flatinn.ru/static/general/names.txt",
             "https://flatinn.ru/static/names.txt"
         ]
+
+    if MODE == 'short':
+        END_LANGS = []
 else:
     START_LANG = config.get('variables', 'START_LANG')
 
