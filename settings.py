@@ -7,8 +7,8 @@ absolute_path = os.path.dirname(os.path.abspath(__file__))
 config = configparser.RawConfigParser()
 config.read(os.path.join(absolute_path, 'config.ini'), encoding='utf-8-sig')
 
-# PROJECT = 'flatinn'
-PROJECT = 'leocars'
+PROJECT = 'flatinn'
+# PROJECT = 'leocars'
 
 BUILD = 'local'
 # BUILD = 'prod'
@@ -81,15 +81,17 @@ if PROJECT == 'flatinn':
         NAME_URLS = [
              "https://flatinn.ru/static/names.txt"
         ]
+    elif MODE == 'short':
+        NAME_URLS = [
+            "https://flatinn.ru/static/names.txt"
+        ]
+        END_LANGS = []
     else:
         NAME_URLS = [
             "https://auth.flatinn.ru/static/names.txt",
             "https://guests.flatinn.ru/static/general/names.txt",
             "https://flatinn.ru/static/names.txt"
         ]
-
-    if MODE == 'short':
-        END_LANGS = []
 else:
     START_LANG = config.get('variables', 'START_LANG')
 
