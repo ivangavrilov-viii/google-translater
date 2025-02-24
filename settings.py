@@ -61,6 +61,7 @@ if PROJECT == 'flatinn':
         'guests',
         'owners',
         'flatinn',
+        'standart',
         'dashboard',
     ]
 
@@ -86,12 +87,14 @@ if PROJECT == 'flatinn':
             "https://flatinn.ru/static/names.txt"
         ]
         END_LANGS = []
-    else:
+    elif MODE == 'standart':
         NAME_URLS = [
             "https://auth.flatinn.ru/static/names.txt",
             "https://guests.flatinn.ru/static/general/names.txt",
             "https://flatinn.ru/static/names.txt"
         ]
+    else:
+        NAME_URLS = list()
 else:
     START_LANG = config.get('variables', 'START_LANG')
 
