@@ -27,7 +27,8 @@ def translate_word(google_translator, name_string, new_language) -> str:
         if "{" not in word and '}' not in word:
             loop = asyncio.get_event_loop()
             translated_text = loop.run_until_complete(google_translator.translate(word, dest=new_language))
-            translated_list.append(translated_text.text)
+            translated_text = translated_text.text.replace("'", "`")
+            translated_list.append(translated_text)
         else:
             translated_list.append(word)
 
