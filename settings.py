@@ -74,6 +74,10 @@ if PROJECT == 'flatinn':
         NAME_URLS = [
             "https://guests.flatinn.ru/static/general/names.txt",
         ]
+    elif MODE == 'owners':
+        NAME_URLS = [
+            "https://owners.flatinn.ru/static/names.txt",
+        ]
     elif MODE == 'auth':
         NAME_URLS = [
             "https://auth.flatinn.ru/static/names.txt",
