@@ -50,7 +50,7 @@ if PROJECT == 'flatinn':
     USER_ID = int(config.get('variables', 'DB_USER_ID'))
 
     BIG_DICTS = [
-        "reviews",
+        # "reviews",
         "rentals-headline",
     ]
 
