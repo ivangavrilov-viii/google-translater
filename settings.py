@@ -7,8 +7,8 @@ absolute_path = os.path.dirname(os.path.abspath(__file__))
 config = configparser.RawConfigParser()
 config.read(os.path.join(absolute_path, 'config.ini'), encoding='utf-8-sig')
 
-PROJECT = 'flatinn'
-# PROJECT = 'leocars'
+# PROJECT = 'flatinn'
+PROJECT = 'leocars'
 
 BUILD = 'local'
 # BUILD = 'prod'
